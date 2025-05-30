@@ -14,4 +14,4 @@ jobs:
         run: free -h
 
       - name: Show Disk Info
-        run: df -h
+        run: lsblk
