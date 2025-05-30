@@ -26,7 +26,18 @@ jobs:
 
       - name: Hiển thị địa chỉ Tailscale SSH
         run: |
-          echo "Tailscale IP:"
+          echo "Tailscale IP (IPv4):"
           tailscale ip -4
-          echo "Bạn có thể SSH vào runner bằng lệnh:"
-          echo "ssh USER@TAILSCALE_IP"
+          echo "Tailscale IP (IPv6):"
+          tailscale ip -6
+          echo "SSH user mặc định: runner"
+          echo "ssh runner@<tailscale-ip>"
+
+      - name: Giữ runner sống trong 6 giờ (bằng cách spam log)
+        run: |
+          echo "Giữ runner sống trong tối đa 6 giờ (CTRL+C để dừng nếu cần)"
+          end=$((SECONDS+21600))  # 6 tiếng = 21600 giây
+          while [ $SECONDS -lt $end ]; do
+            echo "Runner vẫn đang hoạt động... $(date)"
+            sleep 300  # Mỗi 5 phút in 1 lần
+          done
