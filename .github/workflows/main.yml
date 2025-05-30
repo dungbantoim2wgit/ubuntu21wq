@@ -1,0 +1,17 @@
+name: Check System Configuration
+
+on:
+  workflow_dispatch:
+
+jobs:
+  check-system:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show CPU Info
+        run: lscpu
+
+      - name: Show RAM Info
+        run: free -h
+
+      - name: Show Disk Info
+        run: df -h
