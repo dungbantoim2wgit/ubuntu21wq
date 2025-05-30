@@ -1,0 +1,32 @@
+name: Ubuntu Setup
+
+on:
+  workflow_dispatch:
+
+jobs:
+  setup-tailscale-ssh:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Cài đặt SSH server
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openssh-server
+          sudo systemctl enable ssh
+          sudo systemctl start ssh
+          sudo systemctl status ssh --no-pager
+
+      - name: Cài đặt Tailscale
+        run: |
+          curl -fsSL https://tailscale.com/install.sh | sh
+
+      - name: Đăng nhập Tailscale với token
+        run: |
+          sudo tailscale up --authkey ${{ secrets.TAILSCALE_TOKEN }} --ssh
+
+      - name: Hiển thị địa chỉ Tailscale SSH
+        run: |
+          echo "Tailscale IP:"
+          tailscale ip -4
+          echo "Bạn có thể SSH vào runner bằng lệnh:"
+          echo "ssh USER@TAILSCALE_IP"
