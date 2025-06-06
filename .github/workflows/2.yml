@@ -14,7 +14,7 @@ jobs:
 
       - name: Đăng nhập Tailscale với token
         run: |
-          sudo tailscale up --authkey ${{ secrets.TAILSCALE_TOKEN }} --ssh
+          sudo tailscale up --authkey ${{ secrets.TAILSCALE_TOKEN }} --ssh --accept-routes
 
       - name: Hiển thị địa chỉ Tailscale SSH
         run: |
