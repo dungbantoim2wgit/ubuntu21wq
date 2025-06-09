@@ -1,0 +1,36 @@
+name: tmux debug session
+
+on:
+  workflow_dispatch:
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cài tmux và SSH server
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tmux openssh-server
+
+          # Đặt mật khẩu cho user 'runner'
+          echo "runner:runner" | sudo chpasswd
+
+          # Tạo key nếu cần
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+          # Bật SSH
+          sudo service ssh start
+
+      - name: Chạy tmux session
+        run: |
+          tmux new-session -d -s debug_session
+          echo "tmux đã khởi động. Dùng SSH để truy cập."
+
+      - name: In địa chỉ IP nội bộ
+        run: |
+          echo "IP nội bộ (không dùng được từ ngoài):"
+          ip a | grep inet
+
+      - name: Giữ session sống 1 giờ
+        run: sleep 3600
