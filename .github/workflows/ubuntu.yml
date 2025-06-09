@@ -15,13 +15,4 @@ jobs:
       - name: Start tmate session
         uses: mxschmitt/action-tmate@v3
         with:
-          limit-access-to-actor: false  # Cho phép bất kỳ ai có link SSH đều vào được
-
-      - name: Keep session alive
-        run: |
-          echo "🟢 Starting 6-hour keep-alive loop..."
-          for ((i = 1; i <= 72; i++)); do
-            echo "⏳ Keep-alive ping $i/72 at $(date)"
-            sleep 300  # 5 phút
-          done
-          echo "⛔ Keep-alive finished after 6 hours."
+          limit-access-to-actor: false  # Đặt true nếu chỉ bạn được SSH vào
