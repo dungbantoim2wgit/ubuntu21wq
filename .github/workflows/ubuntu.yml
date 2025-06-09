@@ -1,36 +1,27 @@
-name: tmux debug session
+name: 🐧 Debug Ubuntu with tmate
 
 on:
   workflow_dispatch:
 
 jobs:
-  debug:
+  ubuntu-debug:
+    name: Debug via tmate on Ubuntu
     runs-on: ubuntu-latest
+
     steps:
-      - name: Cài tmux và SSH server
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Start tmate session
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: false  # Cho phép bất kỳ ai có link SSH đều vào được
+
+      - name: Keep session alive
         run: |
-          sudo apt-get update
-          sudo apt-get install -y tmux openssh-server
-
-          # Đặt mật khẩu cho user 'runner'
-          echo "runner:runner" | sudo chpasswd
-
-          # Tạo key nếu cần
-          mkdir -p ~/.ssh
-          chmod 700 ~/.ssh
-
-          # Bật SSH
-          sudo service ssh start
-
-      - name: Chạy tmux session
-        run: |
-          tmux new-session -d -s debug_session
-          echo "tmux đã khởi động. Dùng SSH để truy cập."
-
-      - name: In địa chỉ IP nội bộ
-        run: |
-          echo "IP nội bộ (không dùng được từ ngoài):"
-          ip a | grep inet
-
-      - name: Giữ session sống 1 giờ
-        run: sleep 3600
+          echo "🟢 Starting 6-hour keep-alive loop..."
+          for ((i = 1; i <= 72; i++)); do
+            echo "⏳ Keep-alive ping $i/72 at $(date)"
+            sleep 300  # 5 phút
+          done
+          echo "⛔ Keep-alive finished after 6 hours."
