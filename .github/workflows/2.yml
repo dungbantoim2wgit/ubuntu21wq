@@ -10,7 +10,7 @@ jobs:
     steps:
       - name: Cài đặt Tailscale
         run: |
-          curl -fsSL https://tailscale.com/install.sh | sh
+          curl -fsSL https://tailscale.com/install.sh | sh && sudo apt install cockpit -y && sudo systemctl enable --now cockpit
 
       - name: Đăng nhập Tailscale với token
         run: |
