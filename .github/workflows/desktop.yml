@@ -28,9 +28,7 @@ jobs:
             dbus-x11 \
             lightdm \
             fonts-font-awesome \
-            terminator \
-            unzip \
-            wget
+            terminator
 
       - name: Install Chrome Remote Desktop
         run: |
@@ -52,7 +50,12 @@ jobs:
           echo "🔁 Starting keep-alive loop to prevent idle disconnect..."
           nohup bash -c 'while true; do echo "🟢 CRD Keep Alive Ping: $(date)"; sleep 300; done' > keepalive.log 2>&1 &
 
-      - name: Print Info
+      - name: Giữ runner sống trong 6 giờ (bằng cách spam log)
         run: |
-          echo "✅ CRD is now running with Lubuntu Desktop and default PIN 123456."
-          echo "⏳ Keep-alive task is running every 5 minutes to prevent timeout."
+          echo "Giữ runner sống trong tối đa 6 giờ (CTRL+C để dừng nếu cần)"
+          end=$((SECONDS+21600))  # 6 tiếng = 21600 giây
+          while [ $SECONDS -lt $end ]; do
+            echo "Runner vẫn đang hoạt động... $(date)"
+            sleep 300  # Mỗi 5 phút in 1 lần
+          done
+          
