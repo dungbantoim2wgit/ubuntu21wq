@@ -1,0 +1,54 @@
+# .github/workflows/crd-ubuntu.yml
+name: Ubuntu with Desktop + CRD
+
+on:
+  workflow_dispatch:
+    inputs:
+      crd_auth_command:
+        description: 'Paste CRD authentication command here (from https://remotedesktop.google.com/headless)'
+        required: true
+        type: string
+
+jobs:
+  setup-vps:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360  # 6 tiếng
+    steps:
+      - name: Update APT
+        run: |
+          sudo apt-get update
+
+      - name: Install Desktop Environment and Tools
+        run: |
+          sudo apt-get install -y \
+            gnome-session \
+            gnome-terminal \
+            terminator \
+            xorg \
+            dbus-x11 \
+            fonts-font-awesome \
+            unzip \
+            wget
+
+      - name: Install Chrome Remote Desktop
+        run: |
+          wget https://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb
+          sudo dpkg -i chrome-remote-desktop_current_amd64.deb || sudo apt-get -f install -y
+
+      - name: Add user to CRD group
+        run: |
+          sudo usermod -a -G chrome-remote-desktop $USER
+
+      - name: Set GNOME session for CRD
+        run: |
+          echo "exec gnome-session" > ~/.chrome-remote-desktop-session
+
+      - name: Enable CRD using auth command
+        run: |
+          echo "${{ github.event.inputs.crd_auth_command }}" > crd.sh
+          chmod +x crd.sh
+          ./crd.sh
+
+      - name: Print Info
+        run: |
+          echo "✅ CRD should now be running. Use Google Remote Desktop to connect."
