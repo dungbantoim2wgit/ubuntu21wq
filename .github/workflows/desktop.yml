@@ -1,11 +1,11 @@
 # .github/workflows/crd-ubuntu.yml
-name: Ubuntu with Desktop + CRD
+name: Ubuntu with Lubuntu Desktop + CRD
 
 on:
   workflow_dispatch:
     inputs:
       crd_auth_command:
-        description: 'Paste CRD authentication command here (from https://remotedesktop.google.com/headless)'
+        description: 'Paste CRD auth command (copied from https://remotedesktop.google.com/headless)'
         required: true
         type: string
 
@@ -18,15 +18,17 @@ jobs:
         run: |
           sudo apt update
 
-      - name: Install Desktop Environment and Tools
+      - name: Install Lubuntu Desktop Environment (LXQt)
         run: |
           sudo apt install -y \
-            gnome-session \
-            gnome-terminal \
-            terminator \
+            lxqt-core \
+            lxqt-session \
+            openbox \
             xorg \
             dbus-x11 \
+            lightdm \
             fonts-font-awesome \
+            terminator \
             unzip \
             wget
 
@@ -35,20 +37,22 @@ jobs:
           wget https://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb
           sudo dpkg -i chrome-remote-desktop_current_amd64.deb || sudo apt-get -f install -y
 
-      - name: Add user to CRD group
+      - name: Set LXQt session for CRD
         run: |
-          sudo usermod -a -G chrome-remote-desktop $USER
+          echo "exec startlxqt" > ~/.chrome-remote-desktop-session
 
-      - name: Set GNOME session for CRD
+      - name: Enable CRD using auth command with auto PIN
         run: |
-          echo "exec gnome-session" > ~/.chrome-remote-desktop-session
-
-      - name: Enable CRD using auth command
-        run: |
-          echo "${{ github.event.inputs.crd_auth_command }}" > crd.sh
+          echo "${{ github.event.inputs.crd_auth_command }} --pin=123456" > crd.sh
           chmod +x crd.sh
           ./crd.sh
 
+      - name: Start Keep-Alive Ping
+        run: |
+          echo "🔁 Starting keep-alive loop to prevent idle disconnect..."
+          nohup bash -c 'while true; do echo "🟢 CRD Keep Alive Ping: $(date)"; sleep 300; done' > keepalive.log 2>&1 &
+
       - name: Print Info
         run: |
-          echo "✅ CRD should now be running. Use Google Remote Desktop to connect."
+          echo "✅ CRD is now running with Lubuntu Desktop and default PIN 123456."
+          echo "⏳ Keep-alive task is running every 5 minutes to prevent timeout."
