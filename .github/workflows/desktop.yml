@@ -16,11 +16,11 @@ jobs:
     steps:
       - name: Update APT
         run: |
-          sudo apt-get update
+          sudo apt update
 
       - name: Install Desktop Environment and Tools
         run: |
-          sudo apt-get install -y \
+          sudo apt install -y \
             gnome-session \
             gnome-terminal \
             terminator \
