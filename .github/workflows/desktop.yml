@@ -21,14 +21,7 @@ jobs:
       - name: Install Lubuntu Desktop Environment (LXQt)
         run: |
           sudo apt install -y \
-            lxqt-core \
-            lxqt-session \
-            openbox \
-            xorg \
-            dbus-x11 \
-            lightdm \
-            fonts-font-awesome \
-            terminator
+            ubuntu-desktop
 
       - name: Install Chrome Remote Desktop
         run: |
