@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: Update APT
         run: |
-          sudo apt update && sudo apt install kubuntu-desktop
+          sudo apt update && sudo apt install kubuntu-desktop -y
           
       - name: Install Chrome Remote Desktop
         run: |
