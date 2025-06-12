@@ -21,8 +21,8 @@ jobs:
 
       - name: Cài Chrome Remote Desktop
         run: |
-          wget https://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb
-          sudo dpkg -i chrome-remote-desktop_current_amd64.deb || sudo apt-get -f install -y
+          sudo wget https://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb
+          sudo apt install ./chrome-remote-desktop_current_amd64.deb -y
 
       - name: Cấu hình GNOME cho CRD
         run: |
