@@ -1,5 +1,5 @@
 # .github/workflows/crd-ubuntu.yml
-name: Ubuntu with Minimal Desktop + CRD
+name: Ubuntu Minimal Desktop + CRD
 
 on:
   workflow_dispatch:
@@ -14,39 +14,39 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 360  # 6 tiếng
     steps:
-      - name: Cập nhật APT và cài Desktop tối giản (Ubuntu Desktop Minimal + LXQt)
+      - name: Cập nhật APT và cài Ubuntu Desktop tối giản
         run: |
           sudo apt update
-          sudo apt install -y ubuntu-desktop-minimal lxqt xrdp xinit dbus-x11
+          sudo apt install -y ubuntu-desktop-minimal gnome-terminal dbus-x11
 
       - name: Cài Chrome Remote Desktop
         run: |
           wget https://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb
           sudo dpkg -i chrome-remote-desktop_current_amd64.deb || sudo apt-get -f install -y
 
-      - name: Cấu hình LXQt cho CRD
+      - name: Cấu hình GNOME cho CRD
         run: |
-          sudo bash -c 'echo "exec startlxqt" > /etc/chrome-remote-desktop-session'
+          sudo bash -c 'echo "exec gnome-session" > /etc/chrome-remote-desktop-session'
           sudo usermod -a -G chrome-remote-desktop $USER
 
-      - name: Kích hoạt CRD bằng lệnh auth
+      - name: Kích hoạt CRD với auth command
         run: |
           echo "${{ github.event.inputs.crd_auth_command }} --pin=123456" > crd.sh
           chmod +x crd.sh
           ./crd.sh
 
-      - name: Khởi động lại CRD service nếu cần
+      - name: Khởi động lại CRD service
         run: |
           sudo systemctl enable chrome-remote-desktop@$USER
           sudo systemctl restart chrome-remote-desktop@$USER
 
-      - name: Giữ kết nối hoạt động (Keep-Alive Loop)
+      - name: Keep Alive để giữ kết nối CRD
         run: |
           nohup bash -c 'while true; do echo "🟢 CRD Keep Alive Ping: $(date)"; sleep 300; done' > keepalive.log 2>&1 &
 
-      - name: Giữ runner sống trong 6 giờ
+      - name: Giữ runner sống 6 giờ
         run: |
-          echo "🕒 Giữ runner hoạt động tối đa 6 giờ..."
+          echo "🕒 Giữ runner sống tối đa 6 tiếng..."
           end=$((SECONDS+21600))
           while [ $SECONDS -lt $end ]; do
             echo "⏱️ Runner vẫn hoạt động... $(date)"
